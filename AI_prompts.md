@@ -360,7 +360,7 @@ perfect
 
 ## Problem 11: Submit to GitHub
 
-What was lacking: section title only so far; working prompts to follow.
+What was lacking: the layout picture had no place for agents.py, prompts/shared.md, or the screenshot folder, so they were merged into main.py, the five role prompts, and resolved_board.html; the repo name/URL still has to be confirmed after publishing.
 
 ### Prompts
 
