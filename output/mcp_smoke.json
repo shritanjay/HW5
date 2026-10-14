@@ -1,0 +1,121 @@
+{
+  "server": "campus-customs (.mcp.json, stdio)",
+  "database": "data/campus_customs_new.db",
+  "run_at": "2026-10-10T21:00:13+00:00",
+  "tests": [
+    {
+      "prompt": "Ticket 103: Yale AI Club wants 20 CC-HOOD-NAVY hoodies in size M. Use the campus-customs MCP server to check stock and pricing.",
+      "tool": "check_stock_and_pricing",
+      "arguments": {
+        "sku": "CC-HOOD-NAVY",
+        "size": "M",
+        "qty_needed": 20
+      },
+      "output": {
+        "sku": "CC-HOOD-NAVY",
+        "name": "Basic Hoodie Big Yale",
+        "size": "M",
+        "on_hand": 8,
+        "qty_needed": 20,
+        "shortfall": 12,
+        "location": "Aisle A",
+        "unit_cost": 22.0,
+        "list_price": 58.0
+      },
+      "db_check": {
+        "SELECT qty, location FROM inventory WHERE sku='CC-HOOD-NAVY' AND size='M'": [
+          {
+            "qty": 8,
+            "location": "Aisle A"
+          }
+        ],
+        "SELECT unit_cost, list_price FROM pricing WHERE sku='CC-HOOD-NAVY'": [
+          {
+            "unit_cost": 22.0,
+            "list_price": 58.0
+          }
+        ]
+      }
+    },
+    {
+      "prompt": "Ticket 101: Tauhid Zaman ordered a CC-TEE-WHITE in size S and the ticket links invoice 501. Use the campus-customs MCP server to check that invoice and whether the vendor can ship.",
+      "tool": "check_vendor_invoice",
+      "arguments": {
+        "invoice_id": 501
+      },
+      "output": {
+        "id": 501,
+        "vendor_id": 1,
+        "amount": 840.0,
+        "due_date": "2026-08-28",
+        "status": "open",
+        "description": "Rush reprint CC-TEE-WHITE S",
+        "vendor": "Bulldog Print Co",
+        "specialty": "apparel reprint",
+        "lead_days": 5,
+        "shop_today": "2026-08-31",
+        "days_overdue": 3,
+        "vendor_blocked": true,
+        "open_invoice_ids": [
+          501
+        ],
+        "restock_eta_if_unblocked": "2026-09-05"
+      },
+      "db_check": {
+        "SELECT i.amount, i.due_date, i.status, v.name, v.lead_days FROM invoices i JOIN vendors v ON v.id=i.vendor_id WHERE i.id=501": [
+          {
+            "amount": 840.0,
+            "due_date": "2026-08-28",
+            "status": "open",
+            "name": "Bulldog Print Co",
+            "lead_days": 5
+          }
+        ],
+        "SELECT date_today FROM desk": [
+          {
+            "date_today": "2026-08-31"
+          }
+        ]
+      }
+    },
+    {
+      "prompt": "Ticket 102: Elm City Properties says rent is due in 2 days. Use the campus-customs MCP server to check lease 1 and the cash available.",
+      "tool": "check_lease_rent",
+      "arguments": {
+        "lease_id": 1
+      },
+      "output": {
+        "id": 1,
+        "space_name": "Chapel Street shop",
+        "landlord": "Elm City Properties",
+        "monthly_rent": 2400.0,
+        "next_due": "2026-09-02",
+        "notes": null,
+        "shop_today": "2026-08-31",
+        "days_until_due": 2,
+        "overdue": false,
+        "cash_accounts": [
+          {
+            "name": "checking",
+            "balance": 3400.0
+          }
+        ]
+      },
+      "db_check": {
+        "SELECT landlord, monthly_rent, next_due FROM leases WHERE id=1": [
+          {
+            "landlord": "Elm City Properties",
+            "monthly_rent": 2400.0,
+            "next_due": "2026-09-02"
+          }
+        ],
+        "SELECT name, balance FROM cash_accounts": [
+          {
+            "name": "checking",
+            "balance": 3400.0
+          }
+        ]
+      }
+    }
+  ]
+}

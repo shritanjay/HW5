@@ -1,0 +1,20 @@
+# secrets
+.env
+# local Python / Node
+.venv/
+__pycache__/
+frontend/node_modules/
+frontend/dist/
+frontend/*.tsbuildinfo
+.DS_Store
+# data: only the original and the working copy are committed
+data/*
+!data/campus_customs.db
+!data/campus_customs_new.db
+data.zip
+*.db-journal
+# local working notes (not part of the submission layout)
+notes/
+output/database_study.md
+output/ticket_plan.md
+output/resolved_board_images/

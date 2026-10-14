@@ -1,0 +1,67 @@
+{
+  "shop_date": "2026-08-31",
+  "database": "data/campus_customs_new.db (reset from data/campus_customs.db before the run)",
+  "starting_checking": 3400.0,
+  "ending_checking": 160.0,
+  "tickets": [
+    {
+      "id": 101,
+      "type": "customer_order",
+      "final_status": "resolved",
+      "outcome": "Tee CC-TEE-WHITE size S is out of stock (0 on hand). Overdue invoice 501 ($840) blocked the only apparel vendor; the human approved paying it, which unblocked Bulldog Print Co. Tauhid has a draft acknowledgement with no delivery date. The $8 one-tee restock the Boss proposed was not placed (no follow-up approval given).",
+      "runs": ["c44bb111a3a3"],
+      "agents": {
+        "boss": "Read the ticket, spot-checked stock and invoice 501, delegated to Inventory and Accounting in parallel, then Customer Service; set waiting_approval; final call: pay 501 first, then restock.",
+        "inventory": "check_stock_and_pricing, list_vendors, quote_purchase_order: 0 on hand, short 1; Bulldog Print Co (5-day lead) blocked by invoice 501; 1-tee PO = $8.",
+        "accounting": "check_cash_and_obligations, request_payment_approval: invoice 501 $840, 3 days overdue; checking $3,400 -> $2,560 if paid; queued approval #1.",
+        "customer_service": "save_customer_draft: acknowledgement to Tauhid Zaman; out of stock, will reach out when ready; no date promised; not sent.",
+        "facilities": "not involved"
+      },
+      "human_approvals": [
+        {"approval_id": 1, "kind": "pay_invoice", "ref": "invoice 501", "amount": 840.0, "decision": "approved", "by": "Shri", "payment_id": 1}
+      ]
+    },
+    {
+      "id": 102,
+      "type": "rent_notice",
+      "final_status": "resolved",
+      "outcome": "Lease 1 rent ($2,400, due 2026-09-02, not overdue) verified and paid on time after human approval; lease next_due advanced to 2026-10-02.",
+      "runs": ["a07b7ef02173"],
+      "agents": {
+        "boss": "check_lease_rent itself, delegated to Facilities and Accounting in parallel, then Customer Service; set waiting_approval.",
+        "facilities": "check_lease_rent: Elm City Properties, Chapel Street shop, $2,400 due 2026-09-02, 2 days out; notice states no amount, so amount match noted as unverifiable.",
+        "accounting": "check_lease_rent, check_cash_and_obligations, request_payment_approval: queued approval #2 for $2,400; flagged checking would be $160 after 501 and rent.",
+        "customer_service": "save_customer_draft: acknowledgement to Elm City Properties (not expected in the plan); not sent.",
+        "inventory": "not involved"
+      },
+      "human_approvals": [
+        {"approval_id": 2, "kind": "pay_rent", "ref": "lease 1", "amount": 2400.0, "decision": "approved", "by": "Shri", "payment_id": 2}
+      ]
+    },
+    {
+      "id": 103,
+      "type": "price_override",
+      "final_status": "resolved",
+      "outcome": "Human approved the Boss's 20% bulk discount: $46.40 x 20 = $928 ($488 total margin, above the $22 unit cost). 8 size M on hand; the 12-unit restock ($264) was not placed because checking had $160 after the priority payments. No money moved on this ticket.",
+      "runs": ["59ef963885b1", "522e798de81e", "f78099c43397"],
+      "agents": {
+        "boss": "Pass 1: delegated to Accounting, then Inventory, then Customer Service; recommended 20% off; marked blocked. Pass 2 (Run again): re-checked stock, margin, invoice 501, cash, and the PO quote alone; still blocked on cash. Pass 3 (human approval): saved an updated draft itself and resolved.",
+        "accounting": "check_stock_and_pricing, check_discount_margin at 10/15/20/25%: 10% $52.20 ($604 margin), 15% $49.30 ($546), 20% $46.40 ($488), none below cost.",
+        "inventory": "check_stock_and_pricing, list_vendors, quote_purchase_order: 8 on hand, short 12; Bulldog Print Co; 12 x $22 = $264; vendor blocked by 501 at the time.",
+        "customer_service": "save_customer_draft (pass 1): quote to Yale AI Club at 20% off, 8 on hand, 12 to restock, no date promised; drafted before the human decided (deviation).",
+        "facilities": "not involved"
+      },
+      "human_approvals": [
+        {"kind": "discount_decision", "decision": "approved 20% discount ($46.40/unit, $928 total)", "by": "Shri", "via": "dashboard 'The Boss needs your decision' -> follow-up run f78099c43397", "amount_paid": 0.0}
+      ],
+      "issues": [
+        "Pass 3 Boss draft (#4) exposes internal details to the customer (vendor name, $160 cash, $264 restock cost, margin, an ETA), against the Customer Service rules. Draft #3 (Customer Service) is the clean version; a human should send #3, not #4.",
+        "Passes 2 and 3 list inventory/accounting/customer_service in assigned_to, but the Boss worked alone in those passes."
+      ]
+    }
+  ],
+  "cash_ledger": [
+    {"payment_id": 1, "ticket": 101, "kind": "invoice", "ref": "invoice 501", "amount": -840.0, "approved_by": "Shri", "balance_after": 2560.0},
+    {"payment_id": 2, "ticket": 102, "kind": "rent", "ref": "lease 1", "amount": -2400.0, "approved_by": "Shri", "balance_after": 160.0}
+  ]
+}
